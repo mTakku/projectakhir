@@ -6,9 +6,11 @@ use App\Filament\Resources\DokterResource\Pages;
 use App\Filament\Resources\DokterResource\RelationManagers;
 use App\Models\Dokter;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,7 +25,9 @@ class DokterResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('nama_dokter')->label('Nama Dokter')->required(),
+                TextInput::make('spesialis')->label('Spesialis')->required(),
+             
             ]);
     }
 
@@ -31,7 +35,8 @@ class DokterResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('nama_dokter')->label('Nama Dokter'),
+                TextColumn::make('spesialis')->label('Spesialis'),
             ])
             ->filters([
                 //
