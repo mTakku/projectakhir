@@ -14,4 +14,9 @@ class Dokter extends Model
     'spesialis',
 
 ];
+
+public function jadwaldokter()
+{
+    return $this->hasMany(JadwalDokter::class);
+}
 }

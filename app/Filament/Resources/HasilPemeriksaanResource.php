@@ -39,7 +39,16 @@ class HasilPemeriksaanResource extends Resource
                 TextInput::make('harga_pemeriksaan')->label('Harga Pemeriksaan'),
                 Select::make('dokter_id')
                 ->label('Nama Dokter')
-                ->options(Dokter::pluck('nama_dokter', 'id')->toArray()),
+                ->options(function () {
+                    // Menampilkan dokter yang tersedia di jadwal_dokters (available = true)
+                    return Dokter::whereHas('jadwaldokter', function ($query) {
+                        $query->where('available', true); // Pastikan dokter memiliki jadwal yang tersedia
+                    })
+                    ->whereNotIn('id', HasilPemeriksaan::pluck('dokter_id')) // Pastikan dokter belum dipilih di pemeriksaan lain
+                    ->pluck('nama_dokter', 'id') // Ambil nama dan ID dokter
+                    ->toArray();
+                })
+                ->required(),
             ]);
     }
 
@@ -88,4 +97,6 @@ class HasilPemeriksaanResource extends Resource
             'edit' => Pages\EditHasilPemeriksaan::route('/{record}/edit'),
         ];
     }
+
+    
 }

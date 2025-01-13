@@ -24,4 +24,9 @@ public function dokter()
     return $this->belongsTo(Dokter::class);
 }
 
+public function jadwaldokter()
+{
+    return $this->hasMany(JadwalDokter::class);
+}
+
 }
