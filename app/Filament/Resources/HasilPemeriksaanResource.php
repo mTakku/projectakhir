@@ -4,11 +4,16 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\HasilPemeriksaanResource\Pages;
 use App\Filament\Resources\HasilPemeriksaanResource\RelationManagers;
+use App\Models\Dokter;
 use App\Models\HasilPemeriksaan;
+use App\Models\Pasien;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,7 +28,18 @@ class HasilPemeriksaanResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Select::make('pasien_id')
+                ->label('Nama Pasien')
+                ->options(Pasien::pluck('nama_pasien', 'id')->toArray())
+                ->required(),
+
+
+
+                TextInput::make('diagnosa')->label('Diagnosa'),
+                TextInput::make('harga_pemeriksaan')->label('Harga Pemeriksaan'),
+                Select::make('dokter_id')
+                ->label('Nama Dokter')
+                ->options(Dokter::pluck('nama_dokter', 'id')->toArray()),
             ]);
     }
 
@@ -31,7 +47,18 @@ class HasilPemeriksaanResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('pasien.nama_pasien')
+                ->label('Nama Pasien')
+                ->sortable()
+                ->searchable(),
+            TextColumn::make('diagnosa')
+                ->label('Diagnosa'),
+            TextColumn::make('harga_pemeriksaan')
+                ->label('Harga Pemeriksaan'),
+            TextColumn::make('dokter.nama_dokter')
+                ->label('Nama Dokter')
+                ->sortable()
+                ->searchable(),
             ])
             ->filters([
                 //
