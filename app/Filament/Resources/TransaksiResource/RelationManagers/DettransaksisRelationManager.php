@@ -26,7 +26,10 @@ class DettransaksisRelationManager extends RelationManager
         return $form
             ->schema([
                 Select::make('obat_id')->label('Nama Obat')->required()
-                ->options(Obat::pluck('nama_obat', 'id'))
+                ->options(
+                    Obat::where('stok', '>', 0) // Tampilkan hanya obat dengan stok > 0
+                        ->pluck('nama_obat', 'id')
+                )
                 ->reactive() 
                 ->afterStateUpdated(function ($state, callable $set) {
                     $harga = Obat::find($state)?->harga; 
