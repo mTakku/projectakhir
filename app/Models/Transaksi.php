@@ -28,7 +28,10 @@ public function pasien()
     return $this->belongsTo(Pasien::class);
 }
 
-
+public function details()
+{
+    return $this->hasMany(Dettransaksi::class);
+}
 
 
 }

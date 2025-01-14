@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TransaksiResource\Pages;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
+use App\Filament\Resources\TransaksiResource\RelationManagers\DettransaksisRelationManager;
 use App\Models\Hasilpemeriksaan;
 use App\Models\Pasien;
 use App\Models\Transaksi;
@@ -97,7 +98,7 @@ class TransaksiResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            DettransaksisRelationManager::class
         ];
     }
 
