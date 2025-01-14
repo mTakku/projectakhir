@@ -29,4 +29,9 @@ public function jadwaldokter()
     return $this->hasMany(JadwalDokter::class);
 }
 
+public function transaksi()
+{
+    return $this->hasMany(Transaksi::class);
+}
+
 }

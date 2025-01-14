@@ -2,14 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\HasilPemeriksaanResource\Pages;
-use App\Filament\Resources\HasilPemeriksaanResource\RelationManagers;
-use App\Models\Dokter;
-use App\Models\HasilPemeriksaan;
+use App\Filament\Resources\TransaksiResource\Pages;
+use App\Filament\Resources\TransaksiResource\RelationManagers;
+use App\Models\Hasilpemeriksaan;
 use App\Models\Pasien;
+use App\Models\Transaksi;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -18,9 +18,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class HasilPemeriksaanResource extends Resource
+class TransaksiResource extends Resource
 {
-    protected static ?string $model = HasilPemeriksaan::class;
+    protected static ?string $model = Transaksi::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -33,20 +33,18 @@ class HasilPemeriksaanResource extends Resource
                 ->options(Pasien::pluck('nama_pasien', 'id')->toArray())
                 ->required(),
 
+                Select::make('hasilpemeriksaan_id')
+                ->label('Diagnosa')
+                ->options(Hasilpemeriksaan::pluck('diagnosa', 'id')->toArray())
+                ->required(),
 
+                DatePicker::make('tanggal_transaksi')
+                ->label('Tanggal')
+                ->required(),
 
-                TextInput::make('diagnosa')->label('Diagnosa'),
-                TextInput::make('harga_pemeriksaan')->label('Harga Pemeriksaan'),
-                Select::make('dokter_id')
-                ->label('Nama Dokter')
-                ->options(function () {
-                    return Dokter::whereHas('jadwaldokter', function ($query) {
-                        $query->where('available', true); 
-                    })
-                    ->whereNotIn('id', HasilPemeriksaan::pluck('dokter_id')) 
-                    ->pluck('nama_dokter', 'id') 
-                    ->toArray();
-                })
+                Select::make('harga_total')
+                ->label('Harga Total')
+                ->options(Hasilpemeriksaan::pluck('harga_pemeriksaan', 'id')->toArray())
                 ->required(),
             ]);
     }
@@ -59,14 +57,12 @@ class HasilPemeriksaanResource extends Resource
                 ->label('Nama Pasien')
                 ->sortable()
                 ->searchable(),
-            TextColumn::make('diagnosa')
+            TextColumn::make('hasilpemeriksaan.diagnosa')
                 ->label('Diagnosa'),
-            TextColumn::make('harga_pemeriksaan')
-                ->label('Harga Pemeriksaan'),
-            TextColumn::make('dokter.nama_dokter')
-                ->label('Nama Dokter')
-                ->sortable()
-                ->searchable(),
+            TextColumn::make('tanggal_transaksi')
+                ->label('Tanggal'),
+            TextColumn::make('hasilpemeriksaan.harga_pemeriksaan')
+                ->label('Harga Total'),
             ])
             ->filters([
                 //
@@ -91,11 +87,9 @@ class HasilPemeriksaanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListHasilPemeriksaans::route('/'),
-            'create' => Pages\CreateHasilPemeriksaan::route('/create'),
-            'edit' => Pages\EditHasilPemeriksaan::route('/{record}/edit'),
+            'index' => Pages\ListTransaksis::route('/'),
+            'create' => Pages\CreateTransaksi::route('/create'),
+            'edit' => Pages\EditTransaksi::route('/{record}/edit'),
         ];
     }
-
-    
 }
