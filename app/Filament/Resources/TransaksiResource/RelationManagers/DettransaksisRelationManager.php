@@ -19,15 +19,35 @@ class DettransaksisRelationManager extends RelationManager
 {
     protected static string $relationship = 'details';
 
+    protected static ?string $title = 'Detail Transaksi';
+
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('obat_id')->label('Nama Obat')->required()->options(
-                    Obat::pluck('nama_obat','id')
-                ),
-                TextInput::make('jumlah')->label('Jumlah Obat'),
-                TextInput::make('total')->label('Total')->readOnly()->nullable(),
+                Select::make('obat_id')->label('Nama Obat')->required()
+                ->options(Obat::pluck('nama_obat', 'id'))
+                ->reactive() 
+                ->afterStateUpdated(function ($state, callable $set) {
+                    $harga = Obat::find($state)?->harga; 
+                    $set('harga_satuan', $harga); 
+                }),
+
+                TextInput::make('harga_satuan')
+                ->label('Harga Satuan')
+                ->readOnly() // Tidak dapat diedit
+                ->numeric(),
+
+
+                TextInput::make('jumlah')->label('Jumlah Obat')
+                ->reactive() 
+                ->numeric()
+                ->required()
+                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                    $hargaSatuan = $get('harga_satuan');
+                    $set('total', $hargaSatuan * $state); 
+                }),
+                TextInput::make('total')->label('Total')->readOnly()->nullable()->required(),
 
             ]);
     }
@@ -39,6 +59,10 @@ class DettransaksisRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('obat.nama_obat')
                 ->label('Nama Obat')
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('harga_satuan')
+                ->label('Harga per')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('jumlah')->label('Jumlah Obat'),
@@ -60,5 +84,10 @@ class DettransaksisRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+     public function getCreateModalHeading(): string
+    {
+        return 'Buat Detail Transaksi'; 
     }
 }

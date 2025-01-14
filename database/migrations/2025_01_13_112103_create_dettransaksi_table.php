@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('transaksi_id');
             $table->foreignId('obat_id');
+            $table->string('harga_satuan');
             $table->string('jumlah');
             $table->string('total');
             $table->timestamps();

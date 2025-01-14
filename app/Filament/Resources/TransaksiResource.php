@@ -26,6 +26,8 @@ class TransaksiResource extends Resource
     protected static ?int $navigationSort = 5;
 
 
+
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -109,5 +111,10 @@ class TransaksiResource extends Resource
             'create' => Pages\CreateTransaksi::route('/create'),
             'edit' => Pages\EditTransaksi::route('/{record}/edit'),
         ];
+    }
+
+    public function getCreateModalHeading(): string
+    {
+        return 'Buat Detail Transaksi'; 
     }
 }

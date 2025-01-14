@@ -9,6 +9,7 @@ class Dettransaksi extends Model
     protected 
     $fillable = [
     'transaksi_id',
+    'harga_satuan',
     'obat_id',
     'jumlah',
     'total',
@@ -19,4 +20,6 @@ public function obat()
 {
     return $this->belongsTo(Obat::class, 'obat_id');
 }
+
+
 }
