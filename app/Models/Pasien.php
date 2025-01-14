@@ -19,4 +19,19 @@ class Pasien extends Model
         'umur',
         'keluhan',
     ];
+
+    public function transaksi()
+{
+    return $this->hasMany(Transaksi::class);
+}
+
+public function hasilPemeriksaan()
+{
+    return $this->hasMany(Hasilpemeriksaan::class, 'pasien_id');
+}
+
+public function pasien()
+{
+    return $this->belongsTo(Pasien::class);
+}
 }

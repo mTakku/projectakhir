@@ -22,6 +22,9 @@ class TransaksiResource extends Resource
 {
     protected static ?string $model = Transaksi::class;
 
+    protected static ?int $navigationSort = 5;
+
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -30,12 +33,22 @@ class TransaksiResource extends Resource
             ->schema([
                 Select::make('pasien_id')
                 ->label('Nama Pasien')
-                ->options(Pasien::pluck('nama_pasien', 'id')->toArray())
+                ->options(function () {
+                    $usedPasienIds = Transaksi::pluck('pasien_id')->toArray();
+                    return Pasien::whereNotIn('id', $usedPasienIds)
+                        ->pluck('nama_pasien', 'id')
+                        ->toArray();
+                })
                 ->required(),
 
                 Select::make('hasilpemeriksaan_id')
                 ->label('Diagnosa')
-                ->options(Hasilpemeriksaan::pluck('diagnosa', 'id')->toArray())
+                ->options(function () {
+                    $usedHasilPemeriksaanIds = Transaksi::pluck('hasilpemeriksaan_id')->toArray();
+                    return Hasilpemeriksaan::whereNotIn('id', $usedHasilPemeriksaanIds)
+                        ->pluck('diagnosa', 'id')
+                        ->toArray();
+                })
                 ->required(),
 
                 DatePicker::make('tanggal_transaksi')
@@ -44,8 +57,12 @@ class TransaksiResource extends Resource
 
                 Select::make('harga_total')
                 ->label('Harga Total')
-                ->options(Hasilpemeriksaan::pluck('harga_pemeriksaan', 'id')->toArray())
-                ->required(),
+                ->options(function () {
+                    $usedHartotIds = Transaksi::pluck('hasilpemeriksaan_id')->toArray();
+                    return Hasilpemeriksaan::whereNotIn('id', $usedHartotIds)
+                        ->pluck('harga_pemeriksaan', 'id')
+                        ->toArray();
+                }),
             ]);
     }
 

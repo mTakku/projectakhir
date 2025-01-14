@@ -28,10 +28,7 @@ public function pasien()
     return $this->belongsTo(Pasien::class);
 }
 
-public function dokter()
-{
-    return $this->belongsTo(Dokter::class);
-}
+
 
 
 }

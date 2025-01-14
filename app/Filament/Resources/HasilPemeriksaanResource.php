@@ -22,6 +22,11 @@ class HasilPemeriksaanResource extends Resource
 {
     protected static ?string $model = HasilPemeriksaan::class;
 
+    protected static ?int $navigationSort = 4;
+
+
+    
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -30,7 +35,11 @@ class HasilPemeriksaanResource extends Resource
             ->schema([
                 Select::make('pasien_id')
                 ->label('Nama Pasien')
-                ->options(Pasien::pluck('nama_pasien', 'id')->toArray())
+                ->options(function () {
+                    return Pasien::whereNotIn('id', HasilPemeriksaan::pluck('pasien_id'))
+                        ->pluck('nama_pasien', 'id')
+                        ->toArray();
+                })
                 ->required(),
 
 

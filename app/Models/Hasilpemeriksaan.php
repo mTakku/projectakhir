@@ -16,7 +16,7 @@ class Hasilpemeriksaan extends Model
 
     public function pasien()
 {
-    return $this->belongsTo(Pasien::class);
+    return $this->belongsTo(Pasien::class, 'pasien_id');
 }
 
 public function dokter()
