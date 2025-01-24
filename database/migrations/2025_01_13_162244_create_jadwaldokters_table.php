@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('jadwal_dokters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('dokter_id')->constrained()->onDelete('cascade');
+            $table->string('jadwalhari');
             $table->time('start_time');
             $table->time('end_time');
             $table->boolean('available')->default(true);

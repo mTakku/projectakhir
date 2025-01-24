@@ -13,7 +13,7 @@ class Transaksi extends Model
     protected 
         $fillable = [
         'pasien_id',
-        'hasilpemeriksaan_id',
+        't_diagnosa',
         'tanggal_transaksi',
         'harga_total',
     ];

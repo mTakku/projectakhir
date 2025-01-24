@@ -11,6 +11,7 @@ use App\Models\Transaksi;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -36,36 +37,32 @@ class TransaksiResource extends Resource
             ->schema([
                 Select::make('pasien_id')
                 ->label('Nama Pasien')
-                ->options(function () {
-                    $usedPasienIds = Transaksi::pluck('pasien_id')->toArray();
-                    return Pasien::whereNotIn('id', $usedPasienIds)
-                        ->pluck('nama_pasien', 'id')
-                        ->toArray();
+                ->options(Pasien::pluck('nama_pasien', 'id')->toArray())
+                ->afterStateUpdated(function ($state, callable $set) {
+                    $hasilPemeriksaan = Hasilpemeriksaan::find($state);
+            
+                    // Mengatur nilai diagnostik
+                    $set('t_diagnosa', $hasilPemeriksaan?->diagnosa);
+            
+                    // Mengatur harga total
+                    $set('harga_total', $hasilPemeriksaan?->harga_pemeriksaan);
                 })
+                ->reactive() 
                 ->required(),
 
-                Select::make('hasilpemeriksaan_id')
+                TextInput::make('t_diagnosa')
                 ->label('Diagnosa')
-                ->options(function () {
-                    $usedHasilPemeriksaanIds = Transaksi::pluck('hasilpemeriksaan_id')->toArray();
-                    return Hasilpemeriksaan::whereNotIn('id', $usedHasilPemeriksaanIds)
-                        ->pluck('diagnosa', 'id')
-                        ->toArray();
-                })
+                ->readOnly()
                 ->required(),
 
                 DatePicker::make('tanggal_transaksi')
                 ->label('Tanggal')
                 ->required(),
 
-                Select::make('harga_total')
+                TextInput::make('harga_total')
                 ->label('Harga Total')
-                ->options(function () {
-                    $usedHartotIds = Transaksi::pluck('hasilpemeriksaan_id')->toArray();
-                    return Hasilpemeriksaan::whereNotIn('id', $usedHartotIds)
-                        ->pluck('harga_pemeriksaan', 'id')
-                        ->toArray();
-                }),
+                ->readOnly()
+                ,
             ]);
     }
 
@@ -77,11 +74,11 @@ class TransaksiResource extends Resource
                 ->label('Nama Pasien')
                 ->sortable()
                 ->searchable(),
-            TextColumn::make('hasilpemeriksaan.diagnosa')
+            TextColumn::make('t_diagnosa')
                 ->label('Diagnosa'),
             TextColumn::make('tanggal_transaksi')
                 ->label('Tanggal'),
-            TextColumn::make('hasilpemeriksaan.harga_pemeriksaan')
+            TextColumn::make('harga_total')
                 ->label('Harga Total'),
             ])
             ->filters([

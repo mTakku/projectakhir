@@ -9,6 +9,7 @@ class JadwalDokter extends Model
     protected 
         $fillable = [
         'dokter_id',
+        'jadwalhari',
         'start_time',
         'end_time',
         'available',

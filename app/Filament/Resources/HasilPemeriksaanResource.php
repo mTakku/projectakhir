@@ -35,27 +35,17 @@ class HasilPemeriksaanResource extends Resource
             ->schema([
                 Select::make('pasien_id')
                 ->label('Nama Pasien')
-                ->options(function () {
-                    return Pasien::whereNotIn('id', HasilPemeriksaan::pluck('pasien_id'))
-                        ->pluck('nama_pasien', 'id')
-                        ->toArray();
-                })
+                ->options(Pasien::pluck('nama_pasien', 'id')->toArray())
                 ->required(),
 
 
 
                 TextInput::make('diagnosa')->label('Diagnosa'),
+                
                 TextInput::make('harga_pemeriksaan')->label('Harga Pemeriksaan'),
                 Select::make('dokter_id')
                 ->label('Nama Dokter')
-                ->options(function () {
-                    return Dokter::whereHas('jadwaldokter', function ($query) {
-                        $query->where('available', true); 
-                    })
-                    ->whereNotIn('id', HasilPemeriksaan::pluck('dokter_id')) 
-                    ->pluck('nama_dokter', 'id') 
-                    ->toArray();
-                })
+                ->options(Dokter::pluck('nama_dokter', 'id')->toArray())
                 ->required(),
             ]);
     }

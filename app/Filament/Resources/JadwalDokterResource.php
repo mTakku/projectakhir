@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -37,6 +38,10 @@ class JadwalDokterResource extends Resource
                 ->label('Nama Dokter')
                 ->options(Dokter::pluck('nama_dokter', 'id')->toArray()),
 
+                TextInput::make('jadwalhari')
+                ->label('Jadwal Hari')
+                ->required(),
+
                 TimePicker::make('start_time')
                 ->label('Waktu Mulai')
                 ->default('12:00') 
@@ -63,6 +68,8 @@ class JadwalDokterResource extends Resource
                 ->label('Nama Dokter')
                 ->sortable()
                 ->searchable(),
+                TextColumn::make('jadwalhari')
+                ->label('Jadwal Hari'),
             TextColumn::make('start_time')
                 ->label('On Duty'),
             TextColumn::make('end_time')
